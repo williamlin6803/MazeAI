@@ -63,6 +63,7 @@ class Maze(gym.Env):
     
     
     """
+        @ param: None
         @ effects: resets environment
         @ return: a tuple containing the initial position of the agent
     """
@@ -75,7 +76,7 @@ class Maze(gym.Env):
         return self.state
 
     """
-        @ para mode: string representing the mode to render the environment in
+        @ param mode: string representing the mode to render the environment in
         @ effects: renders the environment in rgb arrays via numpy
         @ return: a numpy array or None
     """
@@ -122,3 +123,14 @@ class Maze(gym.Env):
         self.screen.blit(surf, (0, 0))
 
         return np.transpose(np.array(pygame.surfarray.pixels3d(self.screen)), axes=(1, 0, 2))
+    
+    """
+        @ param: None
+        @ effects: closes the environment
+        @ return: None
+    """
+    def close(self) -> None:
+        if self.screen is not None:
+            pygame.display.quit()
+            pygame.quit()
+            self.screen = None
