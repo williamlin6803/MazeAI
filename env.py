@@ -212,3 +212,29 @@ class Maze(gym.Env):
                 maze[dst].remove(src)
 
         return maze
+    
+    """
+        @ param goal: tuple representing the location of the goal in a two-dimensional grid
+        @ param maze: dictionary holding the adjacency lists of all locations in the two-dimensional grid.
+        @ effects: computes the distance to the goal from all other positions in the maze using Dijkstra's algorithm.
+        @ return: A (H x W) numpy array holding the minimum number of moves for each position
+        to reach the goal.
+    """
+    @staticmethod
+    def _compute_distances(goal: Tuple[int, int], maze: Dict[Tuple[int, int], Iterable[Tuple[int, int]]]) -> np.ndarray:
+        distances = np.full((5, 5), np.inf)
+        visited = set()
+        distances[goal] = 0.
+
+        while visited != set(maze):
+            sorted_dst = [(v // 5, v % 5) for v in distances.argsort(axis=None)]
+            closest = next(x for x in sorted_dst if x not in visited)
+            visited.add(closest)
+
+            for neighbour in maze[closest]:
+                distances[neighbour] = min(distances[neighbour], distances[closest] + 1)
+        return distances
+
+env = Maze()
+env.reset()
+env.render(mode='rgb_array')
