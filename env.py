@@ -146,3 +146,16 @@ class Maze(gym.Env):
         if self.shaped_rewards:
             return - (self.distances[next_state] / self.distances.max())
         return - float(state != self.goal)
+    
+    """
+        @ param state: state of the agent prior to taking the action
+        @ param action: the action to simulate the step with
+        @ effects: simulates taking an action in the environment
+        @ return: a tuple containing the next state, reward, completion status, and additional information
+    """
+    def simulate_step(self, state: Tuple[int, int], action: int):
+        reward = self.compute_reward(state, action)
+        next_state = self._get_next_state(state, action)
+        done = next_state == self.goal
+        info = {}
+        return next_state, reward, done, info 
