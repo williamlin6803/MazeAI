@@ -164,7 +164,7 @@ class Maze(gym.Env):
         @ param state: state of the agent prior to taking the action
         @ param action: move performed by the agent
         @ effects: gets the next state after the agent performs action 'a' in state 's'
-        @ returns: state instance representing the new state.
+        @ return: state instance representing the new state
     """
     def _get_next_state(self, state: Tuple[int, int], action: int) -> Tuple[int, int]:
         if action == 0:
@@ -180,3 +180,35 @@ class Maze(gym.Env):
         if next_state in self.maze[state]:
             return next_state
         return state
+    
+    """
+        @ param size: number of elements of each side in the square grid
+        @ effects: creates representation of the maze as a dictionary; keys: states available to agent & values: lists of adjacent states
+        @ return: adjacency list dictionary.
+    """
+    @staticmethod
+    def _create_maze(size: int) -> Dict[Tuple[int, int], Iterable[Tuple[int, int]]]:
+        maze = {(row, col): [(row - 1, col), (row + 1, col), (row, col - 1), (row, col + 1)]
+                for row in range(size) for col in range(size)}
+
+        left_edges = [[(row, 0), (row, -1)] for row in range(size)]
+        right_edges = [[(row, size - 1), (row, size)] for row in range(size)]
+        upper_edges = [[(0, col), (-1, col)] for col in range(size)]
+        lower_edges = [[(size - 1, col), (size, col)] for col in range(size)]
+        walls = [
+            [(1, 0), (1, 1)], [(2, 0), (2, 1)], [(3, 0), (3, 1)],
+            [(1, 1), (1, 2)], [(2, 1), (2, 2)], [(3, 1), (3, 2)],
+            [(3, 1), (4, 1)], [(0, 2), (1, 2)], [(1, 2), (1, 3)],
+            [(2, 2), (3, 2)], [(2, 3), (3, 3)], [(2, 4), (3, 4)],
+            [(4, 2), (4, 3)], [(1, 3), (1, 4)], [(2, 3), (2, 4)],
+        ]
+
+        obstacles = upper_edges + lower_edges + left_edges + right_edges + walls
+
+        for src, dst in obstacles:
+            maze[src].remove(dst)
+
+            if dst in maze:
+                maze[dst].remove(src)
+
+        return maze
