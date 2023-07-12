@@ -134,3 +134,15 @@ class Maze(gym.Env):
             pygame.display.quit()
             pygame.quit()
             self.screen = None
+            
+    """
+        @ param state: the state of the agent prior to taking the action
+        @ param action: the action taken by the agent
+        @ effects: computes the reward attained by taking action 'a' at state 's'
+        @ return: a float representing the reward signal received by the agent
+    """
+    def compute_reward(self, state: Tuple[int, int], action: int) -> float:
+        next_state = self._get_next_state(state, action)
+        if self.shaped_rewards:
+            return - (self.distances[next_state] / self.distances.max())
+        return - float(state != self.goal)
