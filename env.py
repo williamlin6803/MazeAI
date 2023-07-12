@@ -159,3 +159,24 @@ class Maze(gym.Env):
         done = next_state == self.goal
         info = {}
         return next_state, reward, done, info 
+
+    """
+        @ param state: state of the agent prior to taking the action
+        @ param action: move performed by the agent
+        @ effects: gets the next state after the agent performs action 'a' in state 's'
+        @ returns: state instance representing the new state.
+    """
+    def _get_next_state(self, state: Tuple[int, int], action: int) -> Tuple[int, int]:
+        if action == 0:
+            next_state = (state[0] - 1, state[1])
+        elif action == 1:
+            next_state = (state[0], state[1] + 1)
+        elif action == 2:
+            next_state = (state[0] + 1, state[1])
+        elif action == 3:
+            next_state = (state[0], state[1] - 1)
+        else:
+            raise ValueError("Action value not supported:", action)
+        if next_state in self.maze[state]:
+            return next_state
+        return state
