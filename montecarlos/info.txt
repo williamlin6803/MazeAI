@@ -1,0 +1,11 @@
+Monte Carlos learn based on experience by sampling episodes or trajectories of the agent's interactions with the environment. From there, it is able to find the optimal state or q-values.
+
+To estimate the value of a state, Monte Carlo methods average the observed returns obtained from all episodes in which the state was encountered. Similarly, to estimate the value of an action, 
+the observed returns for episodes in which the action was taken from a particular state are averaged. These estimates provide valuable insights into the quality or desirability of states or actions, 
+which enable the agent to make informed decisions.
+
+By iteratively updating the value estimates using Monte Carlo methods, RL algorithms can converge towards better policies. The estimated values guide the agent in selecting actions that lead to 
+higher expected returns over time. This iterative process of estimating values and improving policies is a fundamental aspect of RL.
+
+Monte Carlo methods in RL offer several advantages. They are model-free, meaning that they do not require a complete understanding of the underlying dynamics of the environment. Instead, they learn 
+directly from interactions. Additionally, Monte Carlo methods are suitable for episodic tasks, where episodes have a natural termination point.
