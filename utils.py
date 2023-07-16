@@ -1,9 +1,3 @@
-"""
-
-This module contains wrappers and convenience functions to simplify
-working with gym environments of different kinds.
-
-"""
 from typing import Callable
 
 from IPython import display
@@ -105,8 +99,9 @@ def quatromatrix(action_values, ax=None, triplotkw=None, tripcolorkw=None):
     return tripcolor
 
 
-def test_agent(env: gym.Env, policy: Callable, episodes: int = 10, delay: float = 0.1) -> None:
-    for episode in range(episodes):
+def test_agent(env: gym.Env, policy: Callable, delay: float = 0.1) -> None:
+    reached_end_state = False
+    while not reached_end_state:
         state = env.reset()
         done = False
         while not done:
@@ -121,9 +116,13 @@ def test_agent(env: gym.Env, policy: Callable, episodes: int = 10, delay: float 
             if cv2.waitKey(int(delay * 1000)) & 0xFF == ord('q'):
                 break
             state = next_state
+
+        if done:
+            reached_end_state = True
         if cv2.waitKey(int(delay * 1000)) & 0xFF == ord('q'):
             break
     cv2.destroyAllWindows()
+
 
 
 def plot_cost_to_go(env, q_network, xlabel=None, ylabel=None):

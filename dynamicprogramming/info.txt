@@ -1,0 +1,18 @@
+Dynamic Programming is essentially finding the result of taking every action in every state in advance without having to perform the action
+
+
+
+Disadvantages of Dynamic Programming: 
+
+High Computational Cost and complexity grows rapidly with the number of states. 
+Also, we may not have a model of the environment with all state transitions as control tasks might be random.
+
+
+
+Value Iteration vs Policy Iteration:
+
+Value iteration is simpler to implement and can converge in fewer iterations because it doesn't wait for the value function to converge completely before improving the policy. 
+However, it requires more computation per iteration because it must update the value of every state on each iteration.
+
+Policy iteration can be more efficient for large state spaces because it doesn't need to evaluate every state on each iteration, but the policy evaluation step can be computationally 
+expensive unless you use some form of approximation.

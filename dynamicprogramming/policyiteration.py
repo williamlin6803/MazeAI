@@ -4,18 +4,6 @@ import matplotlib.pyplot as plt
 from env import Maze
 from utils import plot_policy, plot_values, test_agent
 
-import warnings
-warnings.simplefilter('ignore')
-
-
-'''
-Disadvantages of Dynamic Programming: 
-
-High Computational Cost and complexity grows rapidly with the number of states. 
-Also, we may not have a model of the environment with all state transitions as control tasks might be random.
-
-'''
-
 def policy_evaluation(policy_probs,state_values,theta=1e-6,gamma=0.99):
     delta = float('inf')
     while delta > theta:
@@ -82,6 +70,7 @@ if __name__ == '__main__':
     frame = env.render('mode=rgb_array')
     plt.axis('off')
     plt.imshow(frame)
-    # starting model / untrained model
     policy_probs = np.full((5,5,4),0.25)
     test_agent(env,policy,episodes=1)
+    plot_policy(policy_probs,frame)
+    plt.show()
