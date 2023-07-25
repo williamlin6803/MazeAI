@@ -1,0 +1,17 @@
+one hidden layer -> neural network
+two or more hidden layers -> deep neural network
+
+Neural Networks:
+They are comprised of node layers, containing an input layer, one or more hidden layers, and an output layer. Each node connects 
+to another and has an associated weight and threshold. If the output of any individual node is above the specified threshold value, 
+that node is activated, sending data to the next layer of the network. Otherwise, no data is passed along to the next layer of the network.
+convolutional neural networks now provide a more scalable approach to image classification and object recognition tasks, leveraging principles 
+from linear algebra, specifically matrix multiplication, to identify patterns within an image.
+
+
+Keras Models:
+Sequential Model - allows us to create models layer by layer in sequential order. Allows for 1 input tensor and 1 output tensor.
+
+Functional Model- allows us to add layers. Create models that have multiple input or output.
+
+Adam Optimizer - combination of RMSProp and Stochastic Gradient Descent with momentum

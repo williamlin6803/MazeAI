@@ -5,6 +5,14 @@ from env import Maze
 from utils import plot_policy, plot_values, test_agent
 
 
+'''
+Epsilon-Greedy Policy: chooses action with the maximum action-value with probability 1-epsilon but with probability epsilon it chooses a random action
+to ensure that all actions are explored. This is in order to prevent the agent from taking suboptimal actions.
+
+On-Policy: interacting with the environment using the current policy, which is evaluated and improved upon at the same time.
+'''
+
+
 def on_policy_mc_control(policy,action_values,episodes,gamma=0.99,epsilon=0.2):
     sa_returns = {}
     for episode in range(1,episodes+1):

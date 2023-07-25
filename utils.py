@@ -15,7 +15,6 @@ def plot_policy(probs_or_qvals, frame, action_meanings=None):
         action_meanings = {0: 'U', 1: 'R', 2: 'D', 3: 'L'}
     fig, axes = plt.subplots(1, 2, figsize=(12, 6))
     max_prob_actions = probs_or_qvals.argmax(axis=-1)
-    # probs_copy = max_prob_actions.copy().astype(np.object) incorrect, giving me error so I changed
     probs_copy = max_prob_actions.copy().astype(object)
     for key in action_meanings:
         probs_copy[probs_copy == key] = action_meanings[key]
@@ -98,7 +97,6 @@ def quatromatrix(action_values, ax=None, triplotkw=None, tripcolorkw=None):
     tripcolor = ax.tripcolor(A[:, 0], A[:, 1], Tr, facecolors=C, **tripcolorkw)
     return tripcolor
 
-
 def test_agent(env: gym.Env, policy: Callable, delay: float = 0.1) -> None:
     reached_end_state = False
     while not reached_end_state:
@@ -123,6 +121,32 @@ def test_agent(env: gym.Env, policy: Callable, delay: float = 0.1) -> None:
             break
     cv2.destroyAllWindows()
 
+
+
+
+def test_dqagent(env: gym.Env, policy: Callable, delay: float = 0.1) -> None:
+    reached_end_state = False
+    while not reached_end_state:
+        state = env.reset()
+        done = False
+        while not done:
+            state_tensor = torch.tensor(state, dtype=torch.float).unsqueeze(0) #
+            p = policy(state_tensor)
+            p = torch.nn.functional.softmax(p, dim=-1)  # Apply softmax to the last dimension
+            p = p.squeeze().detach().numpy()  # Squeeze the tensor before converting to numpy
+            action = np.random.choice(4, p=p)
+            next_state, _, done, _ = env.step(action)
+            frame = env.render(mode='rgb_array')
+            cv2.imshow('Maze', frame)
+            if cv2.waitKey(int(delay * 1000)) & 0xFF == ord('q'):
+                break
+            state = next_state
+
+        if done:
+            reached_end_state = True
+        if cv2.waitKey(int(delay * 1000)) & 0xFF == ord('q'):
+            break
+    cv2.destroyAllWindows()
 
 
 def plot_cost_to_go(env, q_network, xlabel=None, ylabel=None):

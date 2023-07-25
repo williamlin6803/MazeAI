@@ -1,9 +1,8 @@
+import sys
+sys.path.append('../')
+
 import numpy as np
 import matplotlib.pyplot as plt
-
-import sys
-sys.path.append('../')  # Adds the parent directory to the system path
-
 from env import Maze
 from utils import plot_policy, plot_values, test_agent
 
@@ -36,12 +35,11 @@ def policy(state):
 
 if __name__ == '__main__':
     env = Maze()
-    frame = env.render('mode=rgb_array')
-    plt.axis('off')
-    plt.imshow(frame)
     policy_probs = np.full((5,5,4),0.25)
     state_values = np.zeros((5,5))
     value_iteration(policy_probs,state_values)
+    
+    frame = env.render('mode=rgb_array')
     plot_values(state_values,frame)
     plot_policy(policy_probs,frame)
     test_agent(env,policy)
