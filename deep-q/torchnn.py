@@ -36,9 +36,11 @@ def train_dqn(env):
     epsilon_decay = 50
     learning_rate = 0.001
     target_update = 10
-    memory_size = 1000  
-    batch_size = 16  
-    episodes = 50 
+    memory_size = 500 
+    batch_size = 32  
+    episodes = 50
+
+    reward_per_episode = []  # Store rewards per episode
 
     epsilon = epsilon_start
     input_dim = 2
@@ -56,6 +58,7 @@ def train_dqn(env):
     for episode in range(episodes):
         state = env.reset()
         done = False
+        reward_total = 0  # Initialize the total reward for the episode
         while not done:
             epsilon = decay_epsilon(episode, epsilon_start, epsilon_end, epsilon_decay)
 
@@ -66,6 +69,7 @@ def train_dqn(env):
                 action = torch.argmax(dqn(state_tensor)).item()
 
             next_state, reward, done, _ = env.step(action)
+            reward_total += reward  # Add the reward to the total
             replay_memory.append((state, action, reward, next_state, done))
 
             if len(replay_memory) > batch_size:
@@ -84,17 +88,26 @@ def train_dqn(env):
                 optimizer.step()
 
             state = next_state
+        reward_per_episode.append(reward_total)  # Append the total reward for the episode to the list
 
         if episode % target_update == 0:
             target_dqn.load_state_dict(dqn.state_dict())
 
-    return dqn
+    return dqn, reward_per_episode
 
 if __name__ == "__main__":
     env = Maze()
     frame = env.render('mode=rgb_array')
     plt.axis('off')
     plt.imshow(frame)
-    trained_dqn = train_dqn(env)
+    trained_dqn, reward_per_episode = train_dqn(env)
     test_dqagent(env, trained_dqn)
+
+    # Plotting the rewards per episode
+    plt.figure(figsize=(10, 5))
+    plt.plot(reward_per_episode, label='Reward per episode')
+    plt.xlabel('Episodes')
+    plt.ylabel('Reward')
+    plt.title('Reward per Episode Over Time')
+    plt.legend()
     plt.show()

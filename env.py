@@ -6,6 +6,7 @@ from gym import spaces
 from gym.error import DependencyNotInstalled
 import pygame
 from pygame import gfxdraw
+import random
 
 """
     Description:
@@ -44,6 +45,7 @@ class Maze(gym.Env):
         self.action_space = spaces.Discrete(n=4)
         self.action_space.action_meanings = {0: 'UP', 1: 'RIGHT', 2: 'DOWN', 3: "LEFT"}
         self.observation_space = spaces.MultiDiscrete([size, size])
+        self.traps = []
 
         self.screen = None
         self.agent_transform = None
@@ -234,6 +236,61 @@ class Maze(gym.Env):
             for neighbour in maze[closest]:
                 distances[neighbour] = min(distances[neighbour], distances[closest] + 1)
         return distances
+    
+    def add_random_traps(self, num_traps: int):
+        """
+        Randomly add traps to the maze, ensuring the maze remains solvable.
+
+        @ param num_traps: The number of traps to add.
+        @ effects: Randomly places the specified number of traps within the maze.
+        @ return: None
+        """
+        available_positions = [(i, j) for i in range(self.size) for j in range(self.size) if (i, j) not in [self.state, self.goal]]
+
+        for _ in range(num_traps):
+            random.shuffle(available_positions)  # Randomly shuffle positions
+
+            for position in available_positions:
+                # Make a deep copy of the maze to test with the trap
+                temp_maze = {k: list(v) for k, v in self.maze.items()}
+
+                # Remove the chosen trap position from its neighbors' lists (simulate adding a trap)
+                for neighbour in temp_maze[position]:
+                    temp_maze[neighbour].remove(position)
+
+                # Check if the maze with the trap added is still solvable
+                if is_solvable(temp_maze, self.state, self.goal):
+                    self.maze = temp_maze  # Update the main maze to include the trap
+                    self.traps.append(position)  # Record the trap
+                    available_positions.remove(position)  # Remove position from available positions
+                    break
+
+def is_solvable(maze: Dict[Tuple[int, int], Iterable[Tuple[int, int]]], start: Tuple[int, int], goal: Tuple[int, int]) -> bool:
+    """
+    Check if the maze is solvable using Depth First Search.
+
+    @ param maze: The current maze representation.
+    @ param start: The starting point of the maze.
+    @ param goal: The goal point of the maze.
+    @ return: True if solvable, False otherwise.
+    """
+    stack = [start]
+    visited = set()
+
+    while stack:
+        current = stack.pop()
+        if current == goal:
+            return True
+
+        if current in visited:
+            continue
+
+        visited.add(current)
+        for neighbour in maze[current]:
+            if neighbour not in visited:
+                stack.append(neighbour)
+
+    return False
 
 env = Maze()
 env.reset()
